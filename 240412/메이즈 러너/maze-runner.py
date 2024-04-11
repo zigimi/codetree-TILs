@@ -58,6 +58,9 @@ for i in range(k):
     for j in goal:
         runner.pop(j)
 
+    if not runner:
+        break
+
     # 미로회전
     minsize = max(abs(minx-out[0]), abs(miny-out[1]))
     if minx <= out[0]:
