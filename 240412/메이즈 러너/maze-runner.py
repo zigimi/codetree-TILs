@@ -20,62 +20,99 @@ for i in range(k):
     mindis = 2*n+1
     minx = n
     miny = n
+    goal = []
     for j in range(len(runner)):
         # if j in goal:
         #     continue
-        goal = []
         # print(runner[j])
-        dis = abs(runner[j][0]-out[0])+abs(runner[j][1]-out[1])
-        if runner[j][0]-out[0] < 0 and mymap[runner[j][0]+1][runner[j][1]] == 0 and dis > abs(runner[j][0]+1-out[0])+abs(runner[j][1]-out[1]):
+        # dis = abs(runner[j][0]-out[0])+abs(runner[j][1]-out[1])
+        if runner[j][0]-out[0] < 0 and mymap[runner[j][0]+1][runner[j][1]] == 0:
             runner[j][0] += 1
             answer += 1
             # print(1)
-        elif runner[j][0]-out[0] > 0 and mymap[runner[j][0]-1][runner[j][1]] == 0 and dis > abs(runner[j][0]-1-out[0])+abs(runner[j][1]-out[1]):
+        elif runner[j][0]-out[0] > 0 and mymap[runner[j][0]-1][runner[j][1]] == 0:
             runner[j][0] -= 1
             answer += 1
             # print(2)
         else:
-            if runner[j][1]-out[1] < 0 and mymap[runner[j][0]][runner[j][1]+1] == 0 and dis > abs(runner[j][0]-out[0])+abs(runner[j][1]+1-out[1]):
+            if runner[j][1]-out[1] < 0 and mymap[runner[j][0]][runner[j][1]+1] == 0:
                 runner[j][1] += 1
                 answer += 1
                 # print(3)
-            elif runner[j][1]-out[1] > 0 and mymap[runner[j][0]][runner[j][1]-1] == 0 and dis > abs(runner[j][0]-out[0])+abs(runner[j][1]-1-out[1]):
+            elif runner[j][1]-out[1] > 0 and mymap[runner[j][0]][runner[j][1]-1] == 0:
                 runner[j][1] -= 1
                 answer += 1
                 # print(4)
-
+        # print("->", runner[j])
         if runner[j][0] == out[0] and runner[j][1] == out[1]:
-            goal.append(j)
+            goal.append(runner[j])
             continue
 
         # print(answer)
-        tmpdis = abs(runner[j][0]-out[0])+abs(runner[j][1]-out[1])
+        tmpdis = max(abs(runner[j][0]-out[0]), abs(runner[j][1]-out[1]))
         if tmpdis < mindis:
             mindis = tmpdis
-            minx = runner[j][0]
-            miny = runner[j][1]
+            if runner[j][0] <= out[0]:
+                fx = max(out[0] - tmpdis, 0)
+                lx = out[0] + (tmpdis - (out[0] - fx))
+            else:
+                lx = min(out[0] + tmpdis, n - 1)
+                fx = out[0] - (tmpdis - (lx - out[0]))
+
+            if runner[j][1] <= out[1]:
+                fy = max(out[1] - tmpdis, 0)
+                ly = out[1] + (tmpdis - (out[1] - fy))
+            else:
+                ly = min(out[1] + tmpdis, n - 1)
+                fy = out[1] - (tmpdis - (ly - out[1]))
+
+        elif tmpdis == mindis:
+            if runner[j][0] <= out[0]:
+                tmpfx = max(out[0] - tmpdis, 0)
+                tmplx = out[0] + (tmpdis - (out[0] - fx))
+            else:
+                tmplx = min(out[0] + tmpdis, n - 1)
+                tmpfx = out[0] - (tmpdis - (lx - out[0]))
+
+            if runner[j][1] <= out[1]:
+                tmpfy = max(out[1] - tmpdis, 0)
+                tmply = out[1] + (tmpdis - (out[1] - fy))
+            else:
+                tmply = min(out[1] + tmpdis, n - 1)
+                tmpfy = out[1] - (tmpdis - (ly - out[1]))
+
+            if fx > tmpfx:
+                fx = tmpfx
+                lx = tmplx
+                fy = tmpfy
+                ly = tmply
+
+            elif fx == tmpfx:
+                if fy > tmpfy:
+                    fy = tmpfy
+                    ly = tmply
 
     for j in goal:
-        runner.pop(j)
+        runner.remove(j)
 
     if not runner:
         break
 
     # 미로회전
-    minsize = max(abs(minx-out[0]), abs(miny-out[1]))
-    if minx <= out[0]:
-        fx = max(out[0] - minsize, 0)
-        lx = out[0] + (minsize - (out[0] - fx))
-    else:
-        lx = min(out[0] + minsize, n - 1)
-        fx = out[0] - (minsize - (lx - out[0]))
-
-    if miny <= out[1]:
-        fy = max(out[1] - minsize, 0)
-        ly = out[1] + (minsize - (out[1] - fy))
-    else:
-        ly = min(out[1] + minsize, n - 1)
-        fy = out[1] - (minsize - (ly - out[1]))
+    minsize = mindis #max(abs(minx-out[0]), abs(miny-out[1]))
+    # if minx <= out[0]:
+    #     fx = max(out[0] - minsize, 0)
+    #     lx = out[0] + (minsize - (out[0] - fx))
+    # else:
+    #     lx = min(out[0] + minsize, n - 1)
+    #     fx = out[0] - (minsize - (lx - out[0]))
+    #
+    # if miny <= out[1]:
+    #     fy = max(out[1] - minsize, 0)
+    #     ly = out[1] + (minsize - (out[1] - fy))
+    # else:
+    #     ly = min(out[1] + minsize, n - 1)
+    #     fy = out[1] - (minsize - (ly - out[1]))
 
 
     rot = []
@@ -94,8 +131,10 @@ for i in range(k):
                 out[1] = ly-(j-fx)
                 moveout = True
             if [j, k] in runner:
-                newrunner.append([fx+(k-fy), ly-(j-fx)])
-                runner.remove([j, k])
+                cnt = runner.count([j, k])
+                for _ in range(cnt):
+                    newrunner.append([fx+(k-fy), ly-(j-fx)])
+                    runner.remove([j, k])
     runner.extend(newrunner)
     # print(runner)
     # print(out)
