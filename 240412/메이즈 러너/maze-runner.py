@@ -52,34 +52,36 @@ for i in range(k):
         tmpdis = max(abs(runner[j][0]-out[0]), abs(runner[j][1]-out[1]))
         if tmpdis < mindis:
             mindis = tmpdis
+            max(runner[j][0], out[0])
+
             if runner[j][0] <= out[0]:
                 fx = max(out[0] - tmpdis, 0)
                 lx = out[0] + (tmpdis - (out[0] - fx))
             else:
-                lx = min(out[0] + tmpdis, n - 1)
-                fx = out[0] - (tmpdis - (lx - out[0]))
+                fx = max(runner[j][0] - tmpdis, 0)
+                lx = out[0] + (tmpdis - (out[0] - fx))
 
             if runner[j][1] <= out[1]:
                 fy = max(out[1] - tmpdis, 0)
                 ly = out[1] + (tmpdis - (out[1] - fy))
             else:
-                ly = min(out[1] + tmpdis, n - 1)
-                fy = out[1] - (tmpdis - (ly - out[1]))
+                fy = max(runner[j][1] - tmpdis, 0)
+                ly = out[1] + (tmpdis - (out[1] - fy))
 
         elif tmpdis == mindis:
             if runner[j][0] <= out[0]:
                 tmpfx = max(out[0] - tmpdis, 0)
-                tmplx = out[0] + (tmpdis - (out[0] - fx))
+                tmplx = out[0] + (tmpdis - (out[0] - tmpfx))
             else:
                 tmplx = min(out[0] + tmpdis, n - 1)
-                tmpfx = out[0] - (tmpdis - (lx - out[0]))
+                tmpfx = out[0] - (tmpdis - (tmplx - out[0]))
 
             if runner[j][1] <= out[1]:
                 tmpfy = max(out[1] - tmpdis, 0)
-                tmply = out[1] + (tmpdis - (out[1] - fy))
+                tmply = out[1] + (tmpdis - (out[1] - tmpfy))
             else:
                 tmply = min(out[1] + tmpdis, n - 1)
-                tmpfy = out[1] - (tmpdis - (ly - out[1]))
+                tmpfy = out[1] - (tmpdis - (tmply - out[1]))
 
             if fx > tmpfx:
                 fx = tmpfx
@@ -114,7 +116,7 @@ for i in range(k):
     #     ly = min(out[1] + minsize, n - 1)
     #     fy = out[1] - (minsize - (ly - out[1]))
 
-
+    # print(fx, fy, lx, ly)
     rot = []
     for j in range(fx, lx+1):
         rot.append(mymap[j][fy:ly+1][:])
@@ -136,9 +138,6 @@ for i in range(k):
                     newrunner.append([fx+(k-fy), ly-(j-fx)])
                     runner.remove([j, k])
     runner.extend(newrunner)
-    # print(runner)
-    # print(out)
-    # print()
 
 print(answer)
 print(str(out[0]+1) +  " " + str(out[1]+1))
