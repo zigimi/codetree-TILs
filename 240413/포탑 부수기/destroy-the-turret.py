@@ -31,11 +31,13 @@ def dfs(i, j, dx, dy, dist, att, route):
         check[i][j] = False
 
 for i in range(k):
+    if len(recent) == 1:
+        break
     attacked = []
     # 공격자 선정
     # tmp = heapq.heappop(attackpriority)
-    tmpx = 0
-    tmpy = 0
+    tmpx = -1
+    tmpy = -1
     minattack = 5001
     for j in range(n):
         for k in range(m):
@@ -45,7 +47,7 @@ for i in range(k):
                     tmpx = j
                     tmpy = k
                 elif minattack == mymap[j][k]:
-                    if recent[(j, k)] > recent[(tmpx, tmpy)]:
+                    if tmpx == tmpy == -1 or recent[(j, k)] > recent[(tmpx, tmpy)]:
                         minattack = mymap[j][k]
                         tmpx = j
                         tmpy = k
@@ -59,16 +61,18 @@ for i in range(k):
                                 minattack = mymap[j][k]
                                 tmpx = j
                                 tmpy = k
+
     mymap[tmpx][tmpy] += n+m
     recent[(tmpx, tmpy)] = i
+    attacked.append([tmpx, tmpy])
     # tmp[0] += n+m
     # tmp[1] = -i
     # heapq.heappush(attackpriority, tmp)
-    attacked.append([tmpx, tmpy])
+
     # 공격
     # tmped = heapq.heappop(attackedpriority)
-    tmpedx = n-1
-    tmpedy = m-1
+    tmpedx = -1
+    tmpedy = -1
     maxattack = 0
     for j in range(n):
         for k in range(m):
@@ -78,7 +82,7 @@ for i in range(k):
                     tmpedx = j
                     tmpedy = k
                 elif maxattack == mymap[j][k]:
-                    if recent[(j, k)] < recent[(tmpedx, tmpedy)]:
+                    if tmpedx == tmpedy == -1 or recent[(j, k)] < recent[(tmpedx, tmpedy)]:
                         maxattack = mymap[j][k]
                         tmpedx = j
                         tmpedy = k
@@ -124,12 +128,17 @@ for i in range(k):
         attacked.append([(tmpedx+1)%n, tmpedy])
         attacked.append([(tmpedx+1)%n, (tmpedy-1+m)%m])
         attacked.append([tmpedx, (tmpedy-1+m)%m])
-
+        
+    # print(minroute)
     # for j in range(n):
     #     print(mymap[j])
     # print()
-    for j in range(n):
-        for k in range(m):
+    
+    keys = list(recent.keys())
+    for j, k in keys:
+            if mymap[j][k] == 0:
+                del recent[(j,k)]
+                continue
             if [j,k] not in attacked and mymap[j][k] > 0:
                 mymap[j][k] += 1
 
