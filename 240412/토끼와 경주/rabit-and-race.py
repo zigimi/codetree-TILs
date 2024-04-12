@@ -73,6 +73,7 @@ for _ in range(qs):
             # 이동
             d = dist[minnum]
             cnt = 0
+            distpriority = []
             while cnt < d:
                 for j in range(4):
                     if -1 < move[j][0] + dirs[j][0] < n and -1 < move[j][1] + dirs[j][1] < m:
@@ -84,26 +85,28 @@ for _ in range(qs):
                         move[j][0] += dirs[j][0]
                         move[j][1] += dirs[j][1]
                 cnt+=1
+            for j in range(4):
+                heapq.heappush(distpriority, [-sum(move[j]), -move[j][0], -move[j][1]])
             # 우선순위 구하기
-            mindir = 0
-            mindirsum = sum(move[mindir])
-            for j in range(1, 4):
-                tmpdirsum = sum(move[j])
-                if tmpdirsum > mindirsum:
-                    mindir = j
-                    mindirsum = tmpdirsum
-                elif tmpdirsum == mindirsum:
-                    if move[mindir][0] < move[j][0]:
-                        mindir = j
-                        mindirsum = tmpdirsum
-                    elif move[mindir][0] == move[j][0]:
-                        if move[mindir][1] < move[j][1]:
-                            mindir = j
-                            mindirsum = tmpdirsum
-            rabbits[minnum] = move[mindir]
-            tmp[1] = sum(move[mindir])
-            tmp[2] = move[mindir][0]
-            tmp[3] = move[mindir][1]
+            mindir = heapq.heappop(distpriority)
+            mindirsum = -mindir[0]
+            # for j in range(1, 4):
+            #     tmpdirsum = sum(move[j])
+            #     if tmpdirsum > mindirsum:
+            #         mindir = j
+            #         mindirsum = tmpdirsum
+            #     elif tmpdirsum == mindirsum:
+            #         if move[mindir][0] < move[j][0]:
+            #             mindir = j
+            #             mindirsum = tmpdirsum
+            #         elif move[mindir][0] == move[j][0]:
+            #             if move[mindir][1] < move[j][1]:
+            #                 mindir = j
+            #                 mindirsum = tmpdirsum
+            rabbits[minnum] = [-mindir[1], -mindir[2]]
+            tmp[1] = mindirsum
+            tmp[2] = -mindir[1]
+            tmp[3] = -mindir[2]
             heapq.heappush(jumpspriority, tmp)
             heapq.heappush(scorespriority, [-tmp[1], -tmp[2], -tmp[3], -tmp[4]])
             for k in pids:
