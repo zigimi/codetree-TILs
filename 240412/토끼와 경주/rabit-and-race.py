@@ -1,9 +1,12 @@
+import heapq
 qs = int(input())
 pids = []
 rabbits = {}
 jumps = {}
 score = {}
 dist = {}
+jumpspriority = []
+# scorespriority = []
 for _ in range(qs):
     q = list(map(int, input().split()))
     if q[0] == 100:
@@ -17,50 +20,52 @@ for _ in range(qs):
             jumps[pids[i]] = 0
             score[pids[i]] = 0
             dist[pids[i]] = q[5+2*i]
-
+            heapq.heappush(jumpspriority, [0, 0, 0, 0, pids[i]])
+            # heapq.heappush(scorespriority, [0, 0, 0, -pids[i]])
     elif q[0] == 200:
         for i in range(q[1]):
             # 우선순위
-            sortjumps = sorted(jumps.items(), key=lambda x:x[1])
-            minnum = sortjumps[0][0]
-            minx = rabbits[sortjumps[0][0]][0]
-            miny = rabbits[sortjumps[0][0]][1]
-            minsum = minx + miny
-            if len(sortjumps) > 1 and sortjumps[0][1] == sortjumps[1][1]:
-                for j in range(1, p):
-                    if sortjumps[0][1] == sortjumps[j][1]:
-                        tmpx = rabbits[sortjumps[j][0]][0]
-                        tmpy = rabbits[sortjumps[j][0]][1]
-                        tmpsum = tmpx + tmpy
-                        if tmpsum < minsum:
-                            minnum = sortjumps[j][0]
-                            minx = tmpx
-                            miny = tmpy
-                            minsum = tmpsum
-
-                        elif tmpsum == minsum:
-                            if tmpx < minx:
-                                minnum = sortjumps[j][0]
-                                minx = tmpx
-                                miny = tmpy
-                                minsum = tmpsum
-
-                            elif tmpx == minx:
-                                if tmpy < miny:
-                                    minnum = sortjumps[j][0]
-                                    minx = tmpx
-                                    miny = tmpy
-                                    minsum = tmpsum
-
-                                elif tmpy == miny:
-                                    if sortjumps[j][0] < minnum:
-                                        minnum = sortjumps[j][0]
-                                        minx = tmpx
-                                        miny = tmpy
-                                        minsum = tmpsum
-                    else:
-                        break
+            # sortjumps = sorted(jumps.items(), key=lambda x:x[1])
+            tmp = heapq.heappop(jumpspriority)
+            minnum = tmp[4]
+            minx = tmp[2]
+            miny = tmp[3]
+            # if len(sortjumps) > 1 and sortjumps[0][1] == sortjumps[1][1]:
+            #     for j in range(1, p):
+            #         if sortjumps[0][1] == sortjumps[j][1]:
+            #             tmpx = rabbits[sortjumps[j][0]][0]
+            #             tmpy = rabbits[sortjumps[j][0]][1]
+            #             tmpsum = tmpx + tmpy
+            #             if tmpsum < minsum:
+            #                 minnum = sortjumps[j][0]
+            #                 minx = tmpx
+            #                 miny = tmpy
+            #                 minsum = tmpsum
+            #
+            #             elif tmpsum == minsum:
+            #                 if tmpx < minx:
+            #                     minnum = sortjumps[j][0]
+            #                     minx = tmpx
+            #                     miny = tmpy
+            #                     minsum = tmpsum
+            #
+            #                 elif tmpx == minx:
+            #                     if tmpy < miny:
+            #                         minnum = sortjumps[j][0]
+            #                         minx = tmpx
+            #                         miny = tmpy
+            #                         minsum = tmpsum
+            #
+            #                     elif tmpy == miny:
+            #                         if sortjumps[j][0] < minnum:
+            #                             minnum = sortjumps[j][0]
+            #                             minx = tmpx
+            #                             miny = tmpy
+            #                             minsum = tmpsum
+            #         else:
+            #             break
             jumps[minnum] += 1
+            tmp[0] += 1
             dirs = [[-1, 0],[1, 0], [0, -1], [0, 1]]
             move = [rabbits[minnum][:] for _ in range(4)]
             # 이동
@@ -94,6 +99,11 @@ for _ in range(qs):
                             mindir = j
                             mindirsum = tmpdirsum
             rabbits[minnum] = move[mindir]
+            tmp[1] = sum(move[mindir])
+            tmp[2] = move[mindir][0]
+            tmp[3] = move[mindir][1]
+            heapq.heappush(jumpspriority, tmp)
+
             for k in pids:
                 if k != minnum:
                     score[k] += mindirsum+2
