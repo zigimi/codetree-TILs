@@ -1,3 +1,4 @@
+import copy
 import heapq
 qs = int(input())
 pids = []
@@ -6,7 +7,7 @@ jumps = {}
 score = {}
 dist = {}
 jumpspriority = []
-# scorespriority = []
+
 for _ in range(qs):
     q = list(map(int, input().split()))
     if q[0] == 100:
@@ -21,8 +22,9 @@ for _ in range(qs):
             score[pids[i]] = 0
             dist[pids[i]] = q[5+2*i]
             heapq.heappush(jumpspriority, [0, 0, 0, 0, pids[i]])
-            # heapq.heappush(scorespriority, [0, 0, 0, -pids[i]])
     elif q[0] == 200:
+        scorespriority = []
+        jumpscopy = copy.deepcopy(jumps)
         for i in range(q[1]):
             # 우선순위
             # sortjumps = sorted(jumps.items(), key=lambda x:x[1])
@@ -103,42 +105,22 @@ for _ in range(qs):
             tmp[2] = move[mindir][0]
             tmp[3] = move[mindir][1]
             heapq.heappush(jumpspriority, tmp)
-
+            heapq.heappush(scorespriority, [-tmp[1], -tmp[2], -tmp[3], -tmp[4]])
             for k in pids:
                 if k != minnum:
                     score[k] += mindirsum+2
 
-        maxsum = 0
         maxnum = -1
-        maxx = -1
-        maxy = -1
-        for idx in pids:
-            if jumps[idx] == 0:
+        while scorespriority:
+            tmp = heapq.heappop(scorespriority)
+            idx = -tmp[3]
+            if jumps[idx] == jumpscopy[idx]:
                 continue
-            tmpsum = sum(rabbits[idx])
-            if tmpsum > maxsum:
-                maxsum = tmpsum
+            elif rabbits[idx][0] != -tmp[1] or rabbits[idx][1] != -tmp[2]:
+                continue
+            else:
                 maxnum = idx
-                maxx = rabbits[idx][0]
-                maxy = rabbits[idx][1]
-            elif tmpsum == maxsum:
-                if rabbits[idx][0] > maxx:
-                    maxsum = tmpsum
-                    maxnum = idx
-                    maxx = rabbits[idx][0]
-                    maxy = rabbits[idx][1]
-                elif rabbits[idx][0] == maxx:
-                    if rabbits[idx][1] > maxy:
-                        maxsum = tmpsum
-                        maxnum = idx
-                        maxx = rabbits[idx][0]
-                        maxy = rabbits[idx][1]
-                    elif rabbits[idx][1] == maxy:
-                        if idx > maxnum:
-                            maxsum = tmpsum
-                            maxnum = idx
-                            maxx = rabbits[idx][0]
-                            maxy = rabbits[idx][1]
+                break
         score[maxnum] += q[2]
 
     elif q[0] == 300:
