@@ -92,7 +92,7 @@ for _ in range(m):
                     tmps = tmpnum
 
                     if not (-1 < newsx < n and -1 < newsy < n):
-                        fail.append(s)
+                        fail.append(tmps)
                         break
                     elif reverseSantas[(newsx, newsy)] == 0:
                         santas[tmps] = [newsx, newsy]
@@ -170,7 +170,7 @@ for _ in range(m):
                     tmps = tmpnum
 
                     if not (-1 < newsx < n and -1 < newsy < n):
-                        fail.append(s)
+                        fail.append(tmps)
                         break
                     elif reverseSantas[(newsx, newsy)] == 0:
                         santas[tmps] = [newsx, newsy]
