@@ -166,6 +166,8 @@ for i in range(k):
         attacked.append([(tmpedx+1)%n, tmpedy])
         attacked.append([(tmpedx+1)%n, (tmpedy-1+m)%m])
         attacked.append([tmpedx, (tmpedy-1+m)%m])
+        if abs(tmpedx - tmpx) < 2 and abs(tmpedy - tmpy) < 2:
+            mymap[tmpx][tmpy] += att
 
     # print(minroute)
     # for j in range(n):
