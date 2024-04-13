@@ -102,7 +102,7 @@ for i in range(k):
 
     mymap[tmpx][tmpy] += n+m
     recent[(tmpx, tmpy)] = i
-    attacked.append([tmpx, tmpy])
+
     # tmp[0] += n+m
     # tmp[1] = -i
     # heapq.heappush(attackpriority, tmp)
@@ -166,9 +166,10 @@ for i in range(k):
         attacked.append([(tmpedx+1)%n, tmpedy])
         attacked.append([(tmpedx+1)%n, (tmpedy-1+m)%m])
         attacked.append([tmpedx, (tmpedy-1+m)%m])
-        if abs(tmpedx - tmpx) < 2 and abs(tmpedy - tmpy) < 2:
+        if [tmpx, tmpy] in attacked:
             mymap[tmpx][tmpy] += att
-
+            
+    attacked.append([tmpx, tmpy])
     # print(minroute)
     # for j in range(n):
     #     print(mymap[j])
