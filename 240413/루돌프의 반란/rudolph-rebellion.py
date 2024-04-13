@@ -78,8 +78,8 @@ for _ in range(m):
             newsx = sx+smovex
             newsy = sy+smovey
             if not (-1 < newsx < n and -1 < newsy < n):
-                # fail.append(s)
-                del santas[s]
+                fail.append(s)
+                # del santas[s]
                 continue
             elif reverseSantas[(newsx, newsy)] != 0:
                 # 상호 작용
@@ -94,8 +94,8 @@ for _ in range(m):
                     tmps = tmpnum
 
                     if not (-1 < newsx < n and -1 < newsy < n):
-                        # fail.append(tmps)
-                        del santas[tmps]
+                        fail.append(tmps)
+                        # del santas[tmps]
                         break
                     elif reverseSantas[(newsx, newsy)] == 0:
                         santas[tmps] = [newsx, newsy]
@@ -107,8 +107,8 @@ for _ in range(m):
 
     # print(santas)
     # 실패 산타 삭제
-    # for s in fail:
-    #     del santas[s]
+    for s in fail:
+        del santas[s]
 
     if not santas:
         break
@@ -125,22 +125,22 @@ for _ in range(m):
         tmpx = santas[s][0]
         tmpy = santas[s][1]
 
-        if rx < tmpx and [tmpx-1, tmpy] not in santas.values():
+        if rx < tmpx and ([tmpx-1, tmpy] == [rx, ry] or [tmpx-1, tmpy] not in santas.values()):
             tmpdist = (rx-(tmpx-1))**2+(ry-tmpy)**2
             if tmpdist < mindist:
                 mindist = tmpdist
                 minmove = [-1, 0]
-        if ry > tmpy and [tmpx, tmpy+1] not in santas.values():
+        if ry > tmpy and ([tmpx, tmpy+1] == [rx, ry] or [tmpx, tmpy+1] not in santas.values()):
             tmpdist = (rx - tmpx) ** 2 + (ry - (tmpy+1)) ** 2
             if tmpdist < mindist:
                 mindist = tmpdist
                 minmove = [0, 1]
-        if rx > tmpx and [tmpx+1, tmpy] not in santas.values():
+        if rx > tmpx and ([tmpx+1, tmpy] == [rx, ry] or [tmpx+1, tmpy] not in santas.values()):
             tmpdist = (rx - (tmpx+1)) ** 2 + (ry - tmpy) ** 2
             if tmpdist < mindist:
                 mindist = tmpdist
                 minmove = [1, 0]
-        if ry < tmpy and [tmpx, tmpy-1] not in santas.values():
+        if ry < tmpy and ([tmpx, tmpy-1] == [rx, ry] or [tmpx, tmpy-1] not in santas.values()):
             tmpdist = (rx - tmpx) ** 2 + (ry - (tmpy - 1)) ** 2
             if tmpdist < mindist:
                 mindist = tmpdist
@@ -159,8 +159,8 @@ for _ in range(m):
             newsx = rx + smovex
             newsy = ry + smovey
             if not (-1 < newsx < n and -1 < newsy < n):
-                # fail.append(s)
-                del santas[s]
+                fail.append(s)
+                # del santas[s]
                 continue
             elif reverseSantas[(newsx, newsy)] != 0:
                 # 상호 작용
@@ -175,8 +175,8 @@ for _ in range(m):
                     tmps = tmpnum
 
                     if not (-1 < newsx < n and -1 < newsy < n):
-                        del santas[tmps]
-                        # fail.append(tmps)
+                        # del santas[tmps]
+                        fail.append(tmps)
                         break
                     elif reverseSantas[(newsx, newsy)] == 0:
                         santas[tmps] = [newsx, newsy]
@@ -192,8 +192,8 @@ for _ in range(m):
         # print(santas)
 
     # 실패 산타 삭제
-    # for s in fail:
-    #     del santas[s]
+    for s in fail:
+        del santas[s]
 
     if not santas:
         break
