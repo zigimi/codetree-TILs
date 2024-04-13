@@ -67,7 +67,8 @@ for _ in range(m):
     smovex = movex*c
     smovey = movey*c
     fail = []
-    for s in santas:
+    keys = list(santas.keys())
+    for s in keys:
         sx = santas[s][0]
         sy = santas[s][1]
         if santas[s] == [rx, ry]:
@@ -77,12 +78,13 @@ for _ in range(m):
             newsx = sx+smovex
             newsy = sy+smovey
             if not (-1 < newsx < n and -1 < newsy < n):
-                fail.append(s)
+                # fail.append(s)
+                del santas[s]
                 continue
             elif reverseSantas[(newsx, newsy)] != 0:
                 # 상호 작용
                 tmps = s
-                while [newsx, newsy] in santas.values():
+                while santas and [newsx, newsy] in santas.values():
                     tmpnum = reverseSantas[(newsx, newsy)]
                     reverseSantas[(newsx, newsy)] = tmps
                     santas[tmps] = [newsx, newsy]
@@ -92,7 +94,8 @@ for _ in range(m):
                     tmps = tmpnum
 
                     if not (-1 < newsx < n and -1 < newsy < n):
-                        fail.append(tmps)
+                        # fail.append(tmps)
+                        del santas[tmps]
                         break
                     elif reverseSantas[(newsx, newsy)] == 0:
                         santas[tmps] = [newsx, newsy]
@@ -104,8 +107,8 @@ for _ in range(m):
 
     # print(santas)
     # 실패 산타 삭제
-    for s in fail:
-        del santas[s]
+    # for s in fail:
+    #     del santas[s]
 
     if not santas:
         break
@@ -113,7 +116,8 @@ for _ in range(m):
     fail = []
 
     # 산타의 움직임
-    for s in santas:
+    keys = list(santas.keys())
+    for s in keys:
         if s in prefate or s in newfate:
             continue
         mindist = n ** 2 + n ** 2 + 1
@@ -155,12 +159,13 @@ for _ in range(m):
             newsx = rx + smovex
             newsy = ry + smovey
             if not (-1 < newsx < n and -1 < newsy < n):
-                fail.append(s)
+                # fail.append(s)
+                del santas[s]
                 continue
             elif reverseSantas[(newsx, newsy)] != 0:
                 # 상호 작용
                 tmps = s
-                while [newsx, newsy] in santas.values():
+                while santas and [newsx, newsy] in santas.values():
                     tmpnum = reverseSantas[(newsx, newsy)]
                     reverseSantas[(newsx, newsy)] = tmps
                     santas[tmps] = [newsx, newsy]
@@ -170,7 +175,8 @@ for _ in range(m):
                     tmps = tmpnum
 
                     if not (-1 < newsx < n and -1 < newsy < n):
-                        fail.append(tmps)
+                        del santas[tmps]
+                        # fail.append(tmps)
                         break
                     elif reverseSantas[(newsx, newsy)] == 0:
                         santas[tmps] = [newsx, newsy]
@@ -186,8 +192,8 @@ for _ in range(m):
         # print(santas)
 
     # 실패 산타 삭제
-    for s in fail:
-        del santas[s]
+    # for s in fail:
+    #     del santas[s]
 
     if not santas:
         break
@@ -203,7 +209,7 @@ for _ in range(m):
 
     # print(rx, ry)
     # print(santas)
-    # print(scores)
+    # print(dict(sorted(scores.items())))
 keys = sorted(scores.keys())
 for i in keys:
     print(scores[i], end=" ")
