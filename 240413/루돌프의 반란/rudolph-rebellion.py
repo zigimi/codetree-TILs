@@ -69,6 +69,9 @@ for _ in range(m):
     fail = []
     keys = list(santas.keys())
     for s in keys:
+        if s in fail:
+            continue
+
         sx = santas[s][0]
         sy = santas[s][1]
         if santas[s] == [rx, ry]:
@@ -106,6 +109,7 @@ for _ in range(m):
                 santas[s] = [newsx, newsy]
 
     # print(santas)
+    # print(reverseSantas)
     # 실패 산타 삭제
     for s in fail:
         del santas[s]
@@ -118,7 +122,7 @@ for _ in range(m):
     # 산타의 움직임
     keys = list(santas.keys())
     for s in keys:
-        if s in prefate or s in newfate:
+        if s in prefate or s in newfate or s in fail:
             continue
         mindist = n ** 2 + n ** 2 + 1
         minmove = [0, 0]
@@ -148,8 +152,9 @@ for _ in range(m):
 
         santas[s] = [tmpx+minmove[0], tmpy+minmove[1]]
 
-        # 충돌 - 산타
         del reverseSantas[(tmpx, tmpy)]
+
+        # 충돌 - 산타
         if santas[s] == [rx, ry]:
             newfate.append(s)
             smovex = -minmove[0] * d
@@ -165,7 +170,7 @@ for _ in range(m):
             elif reverseSantas[(newsx, newsy)] != 0:
                 # 상호 작용
                 tmps = s
-                while santas and [newsx, newsy] in santas.values():
+                while [newsx, newsy] in santas.values():
                     tmpnum = reverseSantas[(newsx, newsy)]
                     reverseSantas[(newsx, newsy)] = tmps
                     santas[tmps] = [newsx, newsy]
@@ -209,6 +214,7 @@ for _ in range(m):
 
     # print(rx, ry)
     # print(santas)
+    # print(reverseSantas)
     # print(dict(sorted(scores.items())))
 keys = sorted(scores.keys())
 for i in keys:
